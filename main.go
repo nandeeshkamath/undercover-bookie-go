@@ -16,7 +16,7 @@ func main() {
 	telegramChannelId := os.Args[5]
 	telegramDebugChannelId := "@nandeeshkamathdev"
 
-	if len(os.Args[6]) > 0 {
+	if len(os.Args) > 5 {
 		telegramDebugChannelId = os.Args[6]
 	}
 
