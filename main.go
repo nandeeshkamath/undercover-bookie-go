@@ -16,9 +16,9 @@ func main() {
 	telegramChannelId := os.Args[5]
 	telegramDebugChannelId := "@nandeeshkamathdev"
 
-	if len(os.Args) > 5 {
-		telegramDebugChannelId = os.Args[6]
-	}
+	// if len(os.Args) > 5 {
+	// 	telegramDebugChannelId = os.Args[6]
+	// }
 
 	response, error := clients.GetMovieSynopsis(eventId, regionCode, regionSlug)
 	if error != nil {
