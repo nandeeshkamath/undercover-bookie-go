@@ -12,7 +12,7 @@ import (
 var client = &http.Client{}
 var bookingUrl = os.Getenv("BOOKING_URL")
 
-func IsBookingOpen(eventId string, regionCode string, regionSlug string) models.MovieSynopsis {
+func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) models.MovieSynopsis {
 	request, error := http.NewRequest("GET", bookingUrl, nil)
 	if error != nil {
 		log.Print(error)

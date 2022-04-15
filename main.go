@@ -15,9 +15,10 @@ func main() {
 	regionCode := os.Args[4]
 	telegramChannelId := os.Args[5]
 
-	response := clients.IsBookingOpen(eventId, regionCode, regionSlug)
+	response := clients.GetMovieSynopsis(eventId, regionCode, regionSlug)
+	bookingOpen := strings.Contains(response.BannerWidget.PageCta[0].Text, keyword)
 
-	if strings.Contains(response.BannerWidget.PageCta[0].Text, keyword) {
+	if bookingOpen {
 		eventName := response.Meta.Event.EventName
 		bookingUrl := response.Seo.MetaProperties[7].Value
 		message := fmt.Sprintf("%s is now ready to be booked at %s.\n%s", eventName, regionSlug, bookingUrl)
