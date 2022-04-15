@@ -1,0 +1,29 @@
+name: Check Booking
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  check-booking:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+        check-latest: true
+    - name: Run build
+      run: go build . 
+    - name: Check booking
+      env:
+        BOOKING_URL: ${{ secrets.BOOKING_URL }}
+        TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
+      if: env.TELEGRAM_API_KEY != null
+      run: |
+            while IFS="," read -r rec_column1 rec_column2 rec_column3 rec_column4
+            do
+                echo "Movie : $rec_column1"
+                ./undercover-bookie-go "Book tickets" $rec_column2 $rec_column3 $rec_column4 @nandeeshkamathdev
+            done < <(tail -n +2 /github/workspace/resources/checklist.csv)
