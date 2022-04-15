@@ -12,11 +12,11 @@ import (
 var client = &http.Client{}
 var bookingUrl = os.Getenv("BOOKING_URL")
 
-func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) models.MovieSynopsis {
+func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) (models.MovieSynopsis, error) {
 	request, error := http.NewRequest("GET", bookingUrl, nil)
 	if error != nil {
 		log.Print(error)
-		os.Exit(1)
+		return models.MovieSynopsis{}, error
 	}
 
 	q := request.URL.Query()
@@ -35,6 +35,7 @@ func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) mode
 	response, error := client.Do(request)
 	if error != nil {
 		log.Fatal(error)
+		return models.MovieSynopsis{}, error
 	}
 	defer response.Body.Close()
 
@@ -44,5 +45,5 @@ func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) mode
 	}
 	var synopsis models.MovieSynopsis
 	json.Unmarshal(bodyBytes, &synopsis)
-	return synopsis
+	return synopsis, nil
 }
