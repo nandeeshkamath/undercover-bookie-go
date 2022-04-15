@@ -44,7 +44,7 @@ func GetMovieSynopsis(eventId string, regionCode string, regionSlug string) (mod
 	if error != nil {
 		log.Fatal(error)
 	}
-	fmt.Println(bodyBytes)
+	fmt.Println(string(bodyBytes))
 	var synopsis models.MovieSynopsis
 	json.Unmarshal(bodyBytes, &synopsis)
 	return synopsis, nil
