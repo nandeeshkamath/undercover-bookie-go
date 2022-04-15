@@ -26,4 +26,4 @@ jobs:
             do
                 echo "Movie : $rec_column1"
                 ./undercover-bookie-go "Book tickets" $rec_column2 $rec_column3 $rec_column4 @nandeeshkamathdev
-            done < <(tail -n +2 /github/workspace/resources/checklist.csv)
+            done < <(tail -n +2 $GITHUB_WORKSPACE/resources/checklist.csv)
