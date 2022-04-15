@@ -25,14 +25,14 @@ func main() {
 		clients.SendMessage(telegramDebugChannelId, fmt.Sprint(error))
 	}
 
+	eventName := response.Meta.Event.EventName
 	if len(response.BannerWidget.PageCta) == 0 {
-		clients.SendMessage(telegramDebugChannelId, "No booking found yet.")
+		clients.SendMessage(telegramDebugChannelId, fmt.Sprintf("No booking found yet for %s.", eventName))
 		return
 	}
 	bookingOpen := strings.Contains(response.BannerWidget.PageCta[0].Text, keyword)
 
 	if bookingOpen {
-		eventName := response.Meta.Event.EventName
 		var bookingUrl string
 		if len(response.Seo.MetaProperties) > 0 {
 			bookingUrl = response.Seo.MetaProperties[7].Value
