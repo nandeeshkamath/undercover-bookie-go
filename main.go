@@ -2,44 +2,25 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"os"
+	"strings"
+	"undercover-bookie-go/clients"
 )
 
 func main() {
 	// Input values
-	// keyword := "Book tickets"
-	eventId := "ET00110845"
-	// regionSlug := "manipal"
-	// regionCode := "MANI"
+	keyword := os.Args[1]
+	eventId := os.Args[2]
+	regionSlug := os.Args[3]
+	regionCode := os.Args[4]
+	telegramChannelId := os.Args[5]
 
-	// Get env variables
-	// telegramApiKey := os.Getenv("TELEGRAM_API_KEY")
-	// telegramChannelId := os.Getenv("TELEGRAM_CHANNEL_ID")
-	bookingUrl := os.Getenv("BOOKING_URL")
+	response := clients.IsBookingOpen(eventId, regionCode, regionSlug)
 
-	fmt.Println(bookingUrl)
-
-	client := &http.Client{}
-
-	// Hit booking url
-	request, error := http.NewRequest("GET", bookingUrl, nil)
-	if error != nil {
-		log.Print(error)
-		os.Exit(1)
+	if strings.Contains(response.BannerWidget.PageCta[0].Text, keyword) {
+		eventName := response.Meta.Event.EventName
+		bookingUrl := response.Seo.MetaProperties[7].Value
+		message := fmt.Sprintf("%s is now ready to be booked at %s.\n%s", eventName, regionSlug, bookingUrl)
+		clients.SendMessage(telegramChannelId, message)
 	}
-
-	q := request.URL.Query()
-	q.Add("eventcode", eventId)
-	q.Add("isdesktop", "true")
-	q.Add("channel", "web")
-
-	request.URL.RawQuery = q.Encode()
-
-	fmt.Println(request.URL.String())
-
-	response, error := client.Do(request)
-	fmt.Println(response.Body.Read(make([]byte, 1024)))
-	defer response.Body.Close()
 }
