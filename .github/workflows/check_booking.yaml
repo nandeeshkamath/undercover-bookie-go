@@ -25,5 +25,8 @@ jobs:
             while IFS="," read -r rec_column1 rec_column2 rec_column3 rec_column4
             do
                 echo "Movie : $rec_column1"
+                echo "Event : $rec_column2"
+                echo "regionSlug : $rec_column3"
+                echo "regionCode : $rec_column4"
                 ./undercover-bookie-go "Book tickets" $rec_column2 $rec_column3 $rec_column4 @nandeeshkamathdev
             done < <(tail -n +2 $GITHUB_WORKSPACE/resources/checklist.csv)
