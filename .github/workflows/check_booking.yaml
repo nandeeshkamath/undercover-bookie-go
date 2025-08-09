@@ -15,6 +15,12 @@ jobs:
       with:
         go-version: '1.24'
         check-latest: true
+    - name: Install Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget gnupg unzip
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y ./google-chrome-stable_current_amd64.deb
     - name: Get dependencies
       run: |
         go get undercover-bookie-go
@@ -25,6 +31,7 @@ jobs:
         BOOKING_URL: ${{ secrets.BOOKING_URL }}
         TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
         AUTOMATED_CHECK_CONFIG: ${{ secrets.AUTOMATED_CHECK_CONFIG }}
+        CHROME_HEADLESS: 1
       if: env.TELEGRAM_API_KEY != null
       run: |
             while IFS="," read -r rec_column1 rec_column2 rec_column3 rec_column4
