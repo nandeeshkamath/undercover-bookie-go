@@ -24,6 +24,7 @@ jobs:
       env:
         BOOKING_URL: ${{ secrets.BOOKING_URL }}
         TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
+        AUTOMATED_CHECK_CONFIG: ${{ secrets.AUTOMATED_CHECK_CONFIG }}
       if: env.TELEGRAM_API_KEY != null
       run: |
             while IFS="," read -r rec_column1 rec_column2 rec_column3 rec_column4
