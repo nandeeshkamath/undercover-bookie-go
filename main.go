@@ -2,42 +2,54 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"strings"
 	"undercover-bookie-go/clients"
 )
 
 func main() {
 	// Input values
-	keyword := os.Args[1]
-	eventId := os.Args[2]
-	regionSlug := os.Args[3]
-	regionCode := os.Args[4]
+	// keyword := os.Args[1]
+	// eventId := os.Args[2]
+	// regionSlug := os.Args[3]
+	// regionCode := os.Args[4]
 	telegramChannelId := os.Args[5]
-	telegramDebugChannelId := "@nandeeshkamathdev"
+	// telegramDebugChannelId := "@nandeeshkamathdev"
 
-	response, error := clients.GetMovieSynopsis(eventId, regionCode, regionSlug)
-	if error != nil {
-		clients.SendMessage(telegramDebugChannelId, fmt.Sprint(error))
-	}
+	var automatedCheck AutomatedCheck
+	automatedCheck.Load()
+	eventExists := automatedCheck.Check()
 
-	if len(response.BannerWidget.PageCta) == 0 {
-		return
-	}
-	bookingOpen := strings.Contains(response.BannerWidget.PageCta[0].Text, keyword)
-
-	if bookingOpen {
-		var bookingUrl string
-		if len(response.Seo.MetaProperties) > 0 {
-			bookingUrl = response.Seo.MetaProperties[7].Value
-		} else {
-			bookingUrl = "[ No booking url found ]"
-		}
-		eventName := response.Meta.Event.EventName
-		message := fmt.Sprintf("%s is now ready to be booked at %s.\n%s", eventName, regionSlug, bookingUrl)
+	for url := range eventExists {
+		message := fmt.Sprintf("Event is now ready to be booked: %s.", url)
 		_, error := clients.SendMessage(telegramChannelId, message)
 		if error != nil {
-			clients.SendMessage(telegramDebugChannelId, fmt.Sprint(error))
+			log.Fatal("Failed to send message")
 		}
 	}
+
+	// response, error := clients.GetMovieSynopsis(eventId, regionCode, regionSlug)
+	// if error != nil {
+	// 	clients.SendMessage(telegramDebugChannelId, fmt.Sprint(error))
+	// }
+
+	// if len(response.BannerWidget.PageCta) == 0 {
+	// 	return
+	// }
+	// bookingOpen := strings.Contains(response.BannerWidget.PageCta[0].Text, keyword)
+
+	// if bookingOpen {
+	// 	var bookingUrl string
+	// 	if len(response.Seo.MetaProperties) > 0 {
+	// 		bookingUrl = response.Seo.MetaProperties[7].Value
+	// 	} else {
+	// 		bookingUrl = "[ No booking url found ]"
+	// 	}
+	// 	eventName := response.Meta.Event.EventName
+	// 	message := fmt.Sprintf("%s is now ready to be booked at %s.\n%s", eventName, regionSlug, bookingUrl)
+	// 	_, error := clients.SendMessage(telegramChannelId, message)
+	// 	if error != nil {
+	// 		clients.SendMessage(telegramDebugChannelId, fmt.Sprint(error))
+	// 	}
+	// }
 }
