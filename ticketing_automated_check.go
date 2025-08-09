@@ -38,8 +38,17 @@ func (a *AutomatedCheck) Load() {
 func (a *AutomatedCheck) Check() []string {
 	eventUrls := make([]string, 0)
 	for slug, url := range a.Urls {
-		ctx, cancel := chromedp.NewContext(context.Background())
+		opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		    chromedp.Headless,
+		    chromedp.DisableGPU,
+		    chromedp.NoSandbox,
+		)
+		allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 		defer cancel()
+
+		ctx, cancel := chromedp.NewContext(allocCtx)
+		defer cancel()
+		
 		chromedp.WithPollingTimeout(30 * time.Second)
 
 		var eventUrl string
