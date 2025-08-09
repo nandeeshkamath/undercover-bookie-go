@@ -16,6 +16,9 @@ jobs:
       with:
         go-version: '1.24'
         check-latest: true
+    - name: Get dependencies
+      run: |
+        go get undercover-bookie-go
     - name: Run build
       run: go build . 
     # - name: Run testing
